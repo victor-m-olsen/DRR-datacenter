@@ -87486,7 +87486,16 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                         }
                     },
                     printException: function(cmp, response) {
-                        this.target.displayXHRTrouble && this.target.displayXHRTrouble(response);
+                        if (response.responseText && /GetLegendGraphic/.test(response.responseText)) {
+                            this.target.displayXHRTrouble && this.target.displayXHRTrouble(
+                                gettext('Possible <b>GetLegendGraphic error</b>. Please make sure layer legends are valid. Workaround suggestions:<ul><li>&bull; Unselect layers which legend are not valid</li><li>&bull; Uncheck \'Include legend?\' in Print Preview dialog</li></ul>'),
+                                response.status
+                            );
+                        } else if (response.responseText) {
+                            this.target.displayXHRTrouble && this.target.displayXHRTrouble(response.responseText.substr(0, 1000)+'&hellip;');
+                        } else {
+                            this.target.displayXHRTrouble && this.target.displayXHRTrouble(response);
+                        }
                     },
                     scope: this
                 }
