@@ -41,6 +41,7 @@ import os.path
 
 # ASDC
 from django.utils.text import get_valid_filename, slugify
+from django.contrib.staticfiles.templatetags import staticfiles
 
 ALLOWED_DOC_TYPES = settings.ALLOWED_DOCUMENT_TYPES
 
@@ -110,7 +111,8 @@ def document_detail(request, docid):
 
         metadata = document.link_set.metadata().filter(
             name__in=settings.DOWNLOAD_FORMATS_METADATA)
-        preview_url = document.thumbnail_url.replace("-thumb", "-preview")
+        preview_url = document.thumbnail_url.replace("-thumb", "-preview") if document.thumbnail_url \
+            else staticfiles.static(settings.MISSING_THUMBNAIL)
         context_dict = {
             'permissions_json': _perms_info_json(document),
             'resource': document,
