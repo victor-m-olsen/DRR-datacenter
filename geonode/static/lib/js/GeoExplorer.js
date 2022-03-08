@@ -35239,8 +35239,6 @@ GeoExt.data.PrintProvider = Ext.extend(Ext.util.Observable, {
                                                 //     this.downloadFile('../../dashboard/multiple',dashboard_url, statsFileName, this.customParams.mapTitle);
                                             },
                                             failure: function(response) {
-                                                console.log("failure response razinal");
-                                                console.log(response);
                                                 this.fireEvent("printexception", this, response);
                                             },
                                             scope: this
@@ -90945,8 +90943,8 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
                 actions: ["statMenu"],  actionTarget: "paneltbar"
             }, {
                 actions: ["finderTool"],  actionTarget: "paneltbar"
-            // }, {
-            //     actions: ["SAMTool"],  actionTarget: "paneltbar", id:"SAMToolModule"
+            }, {
+                actions: ["SAMTool"],  actionTarget: "paneltbar", id:"SAMToolModule"
             }, {
                 ptype: "gxp_villageinspector", format: 'grid',
                 toggleGroup: "interaction",
@@ -94328,27 +94326,27 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             }
         });
 
-        // new Ext.Button({
-        //     id: "SAMTool",
-        //     text: gettext('Humanitarian Access'),
-        //     iconCls: 'icon-sam-tool',
-        //     enableToggle: true,
-        //     toggleGroup: "interaction",
-        //     disabled: false,
-        //     pressed: false,
-        //     toggleHandler: function(){
-        //         if (this.pressed){
-        //             Ext.getCmp('east').expand();
-        //             Ext.getCmp('bd_SAM_panel').show();
-        //             Ext.getCmp('bd_SAM_panel').expand();
-        //         } else {
-        //             if (!Ext.getCmp('statMenu').pressed && !Ext.getCmp('finderTool').pressed && !Ext.getCmp('secEntry').pressed)
-        //             // if (!Ext.getCmp('statMenu').pressed && !Ext.getCmp('finderTool').pressed)
-        //                 Ext.getCmp('east').collapse();
-        //             Ext.getCmp('bd_SAM_panel').hide();
-        //         }
-        //     }
-        // });
+        new Ext.Button({
+            id: "SAMTool",
+            text: gettext('Humanitarian Access'),
+            iconCls: 'icon-sam-tool',
+            enableToggle: true,
+            toggleGroup: "interaction",
+            disabled: false,
+            pressed: false,
+            toggleHandler: function(){
+                if (this.pressed){
+                    Ext.getCmp('east').expand();
+                    Ext.getCmp('bd_SAM_panel').show();
+                    Ext.getCmp('bd_SAM_panel').expand();
+                } else {
+                    if (!Ext.getCmp('statMenu').pressed && !Ext.getCmp('finderTool').pressed && !Ext.getCmp('secEntry').pressed)
+                    // if (!Ext.getCmp('statMenu').pressed && !Ext.getCmp('finderTool').pressed)
+                        Ext.getCmp('east').collapse();
+                    Ext.getCmp('bd_SAM_panel').hide();
+                }
+            }
+        });
 
         new Ext.Button({
             id: "secEntry",
