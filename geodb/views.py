@@ -68,10 +68,10 @@ gdal_path = '/usr/bin/' # production
 # gdal_path = '/usr/local/bin/' # development
 
 
-def getLatestEarthQuake():
-    startdate = datetime.datetime.utcnow()
-    startdate = startdate - datetime.timedelta(days=30)
-    contents = getContents('origin',['stationlist.txt'],bounds=[60,77,29,45], magrange=[4,9], starttime=startdate, listURL=True, getAll=True)
+def getLatestEarthQuake(startdate=datetime.datetime.utcnow()-datetime.timedelta(days=30), enddate=None):
+    # startdate = datetime.datetime.utcnow()
+    # startdate = startdate - datetime.timedelta(days=30)
+    contents = getContents('origin',['stationlist.txt'],bounds=[60,77,29,45], magrange=[4,9], starttime=startdate, endtime=enddate, listURL=True, getAll=True)
 
     for content in contents:
         point = Point(x=content['geometry']['coordinates'][0], y=content['geometry']['coordinates'][1],srid=4326)
@@ -97,10 +97,10 @@ def getLatestEarthQuake():
             c.save()
             print 'earthqueke id ' + content['properties']['code'] + ' added'
 
-def getLatestShakemap(includeShakeMap=False):
-    startdate = datetime.datetime.utcnow()
-    startdate = startdate - datetime.timedelta(days=30)
-    contents = getContents('shakemap',['shape.zip'],bounds=[60,77,29,45], magrange=[4,9], starttime=startdate, listURL=True, getAll=True)
+def getLatestShakemap(includeShakeMap=False, startdate=datetime.datetime.utcnow()-datetime.timedelta(days=35), enddate=None):
+    # startdate = datetime.datetime.utcnow()
+    # startdate = startdate - datetime.timedelta(days=35)
+    contents = getContents('shakemap',['shape.zip'],bounds=[60,77,29,45], magrange=[4,9], starttime=startdate, endtime=enddate, listURL=True, getAll=True)
 
     for content in contents:
         point = Point(x=content['geometry']['coordinates'][0], y=content['geometry']['coordinates'][1],srid=4326)
