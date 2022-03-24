@@ -35,7 +35,36 @@ directory = 'pub/corp/scsb/wyang/data'
 PATH = '/home/uploader/drought_raster/tif_file/'
 output = '/home/uploader/drought_raster/reclassify_file/'
 
-def downloadtif():
+def ftp_wrapper(callback):
+    ftp = FTP(server)
+    ftp.login()
+    print "[ftp] changing to directory: "+directory
+    ftp.cwd(directory)
+    result = callback(ftp)
+    ftp.quit()
+    return result
+
+def ftp_get_filenames():
+    def callback(ftp):
+        filenames = []
+        print "[ftp] getting filenames"
+        ftp.retrlines('NLST', filenames.append)
+        return filenames
+    return ftp_wrapper(callback)
+
+def ftp_get_file(filename):
+    def callback(ftp):
+        print "[ftp] starting to download: "+ filename
+        ftp.retrbinary("RETR {}".format(filename), open(PATH+filename, 'wb').write)
+    return ftp_wrapper(callback)
+
+def downloadtif(filter_woys=[], max_loop=1):
+    """
+    Download tiff then reclassify drought data.
+    @param filter_woys: When not empty only process woys in this list, e.g. [2022001,2011003].
+    @param max_loop: Number of maximum woy data processed, default to 1 because long process.
+    @return: None
+    """
 
     sql = "select distinct woy from history_drought ORDER BY woy ASC"
     cursor = connections['geodb'].cursor()
@@ -45,23 +74,36 @@ def downloadtif():
         woys.append(i['woy'])
     cursor.close()
 
-    ftp = FTP(server)
-    ftp.login()
+    # ftp = FTP(server)
+    # ftp.login()
 
-    # logger.info("changing to directory: "+directory)
-    print "changing to directory: "+directory
-    ftp.cwd(directory)
-    # ftp.retrlines('LIST')
+    # # logger.info("changing to directory: "+directory)
+    # print "changing to directory: "+directory
+    # ftp.cwd(directory)
+    # # ftp.retrlines('LIST')
 
-    filenames = []
-    # CountData = []
-    ftp.retrlines('NLST', filenames.append)
-    print woys
-    for filename in filenames:
+    # filenames = []
+    # # CountData = []
+    # ftp.retrlines('NLST', filenames.append)
+    woys_skipped = []
+    woys_processed = []
+    remaining_loop = max_loop
+    filenames = ftp_get_filenames()
+    print 'existing woys:', woys
+    for filename in reversed(filenames):
         if "VHI" in filename:
             filecode = filename[-14:-7]
             # print filecode, filename
             if filecode not in woys:
+
+                if filter_woys and int(filecode) not in filter_woys:
+                    woys_skipped += [filecode]
+                    continue
+
+                if not filter_woys and remaining_loop <= 0:
+                    print 'exit processing drought because max_loop(%s) exceeded'%(max_loop)
+                    break
+                remaining_loop -= 1
 
                 if not os.path.exists(PATH):
                     os.makedirs(PATH)
@@ -73,11 +115,16 @@ def downloadtif():
                 # else:
                 # print(PATH)
                 # logger.debug("starting to download: "+ filename)
-                print "starting to download: "+ filename
-                ftp.retrbinary("RETR {}".format(filename), open(PATH+filename, 'wb').write)
+                # print "starting to download: "+ filename
+                # ftp.retrbinary("RETR {}".format(filename), open(PATH+filename, 'wb').write)
+                ftp_get_file(filename)
                 reclassify(filename, filecode)
                 # logger.info("Success")
-                print "Success"
+                print "success processing drought woy:"+filecode
+                woys_processed += [filecode]
+
+    print 'woys_processed:', woys_processed
+    print 'woys skipped because not in filter_woys:', woys_skipped
 
     # if NoData == True:
     #     # logger.info("Data Not Found")
@@ -85,7 +132,7 @@ def downloadtif():
     # else:
     #     # logger.info("Downloading and Reclassify is success")
     #     print "Downloading and Reclassify is success"
-    ftp.quit()
+    # ftp.quit()
 
 def reclassify(filename, filecode):
     Image = gdal.Open(os.path.join(PATH, filename))

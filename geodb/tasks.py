@@ -1,9 +1,10 @@
 
 from celery.task.schedules import crontab
-from celery.decorators import periodic_task
+from celery.decorators import periodic_task, task
 from celery.utils.log import get_task_logger
 from datetime import datetime
 from geodb.views import getForecastedDisaster, updateSummaryTable, getSnowCover, getLatestEarthQuake, getLatestShakemap, databasevacumm, runGlofasDownloader
+from geodb.zonal_stats import downloadtif
 from dashboard.views import classmarkerGet
 
 logger = get_task_logger(__name__)
@@ -40,5 +41,7 @@ def runGetGlofasDS():
 @periodic_task(run_every=(crontab(hour='1')))
 def runClassmarkerGet():
 	classmarkerGet()
-	
 
+@task()
+def downloadtif_task(filter_woys=[], max_loop=1):
+    downloadtif(filter_woys=filter_woys, max_loop=max_loop)
