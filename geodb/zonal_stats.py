@@ -237,6 +237,7 @@ def zonal_stats(vector_path, raster_path, filecode, nodata_value=None, global_sr
     # Loop through vectors
     stats = []
     feat = vlyr.GetNextFeature()
+    log_counter = 1
     while feat is not None:
 
         if not global_src_extent:
@@ -307,7 +308,10 @@ def zonal_stats(vector_path, raster_path, filecode, nodata_value=None, global_sr
                 woy=filecode
             )
             c.save()
-            print feature_stats
+
+            if len(stats) >= log_counter:
+                print "drought vector feature #%s: %s"%(len(stats), feature_stats)
+                log_counter *= 2
         
 
         rvds = None
