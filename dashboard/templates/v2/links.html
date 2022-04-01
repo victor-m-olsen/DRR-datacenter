@@ -34,9 +34,11 @@
           <li>
               <a href="{% url 'v2:dashboard_detail' %}?page=earthquake{{add_link}}"><span>{% trans 'Earthquake' %}</span></a>
           </li>
+          {% if user.org_acronym.lower == 'immap' %}
           <li>
-              <a href="{% url 'v2:dashboard_detail' %}?page=security{{add_link}}"><span>{% trans 'Humanitarian Access' %}</span></a>
+            <a href="{% url 'v2:dashboard_detail' %}?page=security{{add_link}}"><span>{% trans 'Humanitarian Access' %}</span></a>
           </li>
+          {% endif %}
           <li>
               <a href="{% url 'v2:dashboard_detail' %}?page=naturaldisaster{{add_link}}"><span>{% trans 'Natural Disaster' %}</span></a>
           </li>

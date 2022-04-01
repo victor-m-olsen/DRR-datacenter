@@ -1,40 +1,38 @@
-from django.shortcuts import render, redirect
-from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext, loader
-from geodb.geo_calc import getBaseline, getFloodForecast, getFloodRisk, getAvalancheRisk, getAvalancheForecast, getAccessibility, getEarthquake, getSecurity, getLandslideRisk, getQuickOverview, getDroughtRisk
-from geodb.models import AfgAdmbndaAdm1, AfgAdmbndaAdm2
-from django.shortcuts import HttpResponse
-from matrix.models import matrix, MatrixCertificate
-from dashboard.models import classmarker
-from urlparse import urlparse
-from geonode.maps.views import _resolve_map, _PERMISSION_MSG_VIEW
-import json, os
-
-# from wkhtmltopdf.views import PDFTemplateResponse
-import pdfkit
-from geonode.people.models import Profile
-from django.views.decorators.csrf import csrf_exempt
-
-from datetime import datetime, date
-from django.utils.formats import dateformat
-
-from django.conf import settings
-
-import pdfcrowd
-from PyPDF2 import PdfFileMerger, PdfFileReader
-from StringIO import StringIO
-import urllib2, urllib
-from urlparse import parse_qs, urlsplit, urlunsplit
-import re
-from requests.utils import quote
-from django.utils import translation
-
-import time
-import md5
 import calendar
+import json, os
+import md5
+import pdfcrowd
+import pdfkit
+import re
+import time
+import urllib2, urllib
 
+from .decorators import passes_test_then_return_func
 from avatar.templatetags.avatar_tags import avatar_print_url
+from dashboard.models import classmarker
+from datetime import datetime, date
+from django.conf import settings
+from django.shortcuts import HttpResponse
+from django.shortcuts import render_to_response, get_object_or_404
+from django.shortcuts import render, redirect
+from django.template import RequestContext, loader
+from django.utils import translation
+from django.utils.formats import dateformat
+from django.views.decorators.csrf import csrf_exempt
+from geodb.geo_calc import getBaseline, getFloodForecast, getFloodRisk, getAvalancheRisk, getAvalancheForecast, getAccessibility, getEarthquake, getSecurity, getLandslideRisk, getQuickOverview, getDroughtRisk
 from geodb.geoapi import getClosestDroughtWOY
+from geodb.models import AfgAdmbndaAdm1, AfgAdmbndaAdm2
+from geonode.maps.views import _resolve_map, _PERMISSION_MSG_VIEW
+from geonode.people.models import Profile
+from geonode.views import err403
+from matrix.models import matrix, MatrixCertificate
+from PyPDF2 import PdfFileMerger, PdfFileReader
+from requests.utils import quote
+from StringIO import StringIO
+# from wkhtmltopdf.views import PDFTemplateResponse
+from urlparse import parse_qs, urlsplit, urlunsplit
+from urlparse import urlparse
+
 
 def common(request):
 	response = {}
@@ -133,6 +131,10 @@ def common(request):
 	return response
 
 # Create your views here.
+@passes_test_then_return_func(
+	# if access page security and not immap org member then 403
+	lambda request: (request.user.org_acronym.lower() != 'immap') and (request.GET['page'] == 'security'), 
+	lambda request: err403(request))
 def dashboard_detail(request):
 	v2_folder = ''
 	user_logo = avatar_print_url(request.user,200)
