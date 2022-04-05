@@ -94333,6 +94333,7 @@ GeoExplorer.Composer = Ext.extend(GeoExplorer, {
             enableToggle: true,
             toggleGroup: "interaction",
             disabled: false,
+            hidden: !Boolean(this.initialConfig.org_acronym && (this.initialConfig.org_acronym.toLowerCase() == 'immap')),
             pressed: false,
             toggleHandler: function(){
                 if (this.pressed){
