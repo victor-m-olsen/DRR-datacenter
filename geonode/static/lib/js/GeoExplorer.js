@@ -87635,7 +87635,9 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                                 }],
                                 listeners: {
                                     afterlayout: function(evt) {
-                                        printWindow.setWidth(Math.max(360, this.getWidth() + 24));
+                                        // code below trigger afterlayout listener and create infinite loop
+                                        // Error message: RangeError: Maximum call stack size exceeded
+                                        // printWindow.setWidth(Math.max(360, this.getWidth() + 24));
                                         printWindow.center();
                                     }
                                 }
@@ -87666,9 +87668,10 @@ gxp.plugins.Print = Ext.extend(gxp.plugins.Tool, {
                         w += item.getWidth();
                     }
                 });
+                var frameWidth = 24;
                 printWindow.setWidth(
                     Math.max(printWindow.items.get(0).printMapPanel.getWidth(),
-                    w + 20)
+                    w) + frameWidth
                 );
                 printWindow.center();
             }
