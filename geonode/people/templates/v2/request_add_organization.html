@@ -1,0 +1,30 @@
+{% extends "v2/site_base.html" %}
+
+{% load i18n %}
+{% load bootstrap_tags %}
+
+{% block body %}
+	<section class="title">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>{% trans "Request Add Organization" %}</h1>
+            </div>
+        </div>
+    </div>
+</section>
+
+  <section id="login-page" class="container">
+      <div class="row">
+          <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+              <form role="form" method="POST" action="{% url "request_add_organization" %}" autocapitalize="off"
+                  {% if form.is_multipart %} enctype="multipart/form-data" {% endif %}>
+                  {% csrf_token %}
+                  {{ form|as_bootstrap }}
+                  <button type="submit" class="btn btn-primary">{% trans "Submit" %}</button>
+              </form>
+          </div>
+      </div>
+      
+  </section>  
+{% endblock %}

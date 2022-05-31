@@ -1,0 +1,29 @@
+{% extends "v2/site_base.html" %}
+
+{% load i18n %}
+{% load bootstrap_tags %}
+
+{% block head_title %}{% trans "Request Add Organization" %}{% endblock %}
+
+{% block body %}
+    <!-- Title -->
+	<section class="title">
+	    <div class="container">
+	        <div class="row">
+	            <div class="col-md-6">
+                    <h1>{% trans "Request Add Organization" %}</h1>
+	            </div>
+	        </div>
+	    </div>
+    </section>
+
+    <section class="min-height-empty">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                    <p>{% blocktrans %}Thank you for your request. We will review the request and inform you the result by email.{% endblocktrans %}</p>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

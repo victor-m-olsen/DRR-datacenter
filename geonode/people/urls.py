@@ -29,4 +29,5 @@ urlpatterns = patterns('geonode.people.views',
                        url(r'^forgotname', 'forgot_username', name='forgot_username'),
                        ##added by razinal
                        url(r'^members', 'member_count', name='members'),
+                       url(r'^request-add-organization', 'request_add_organization', name='request_add_organization'),
                        )

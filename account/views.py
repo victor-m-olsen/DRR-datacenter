@@ -1,5 +1,7 @@
 from __future__ import unicode_literals
 
+import json
+
 from django.http import Http404, HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404
 from django.utils.http import base36_to_int, int_to_base36
@@ -26,6 +28,8 @@ from account.utils import default_redirect
 from notification import models as notification
 
 from django.conf import settings
+
+from geonode.people.models import Organization
 
 class SignupView(FormView):
 
@@ -88,9 +92,11 @@ class SignupView(FormView):
     def get_context_data(self, **kwargs):
         ctx = kwargs
         redirect_field_name = self.get_redirect_field_name()
+        organizations = {org[0]:org for org in Organization.valid_only().values_list('org_acronym','organization','org_type','org_name_status')}
         ctx.update({
             "redirect_field_name": redirect_field_name,
             "redirect_field_value": self.request.REQUEST.get(redirect_field_name, ""),
+            "organizations": json.dumps(organizations),
         })
         return ctx
 
@@ -183,7 +189,10 @@ class SignupView(FormView):
  
         user.username = username
         user.email = form.cleaned_data["email"].strip()
-        user.organization = form.cleaned_data["organization"].strip()
+        user.organization = form.cleaned_data["organization"]
+        user.org_acronym = form.cleaned_data["org_acronym"]
+        user.org_type = form.cleaned_data["org_type"]
+        user.org_name_status = form.cleaned_data["org_name_status"]
         user.title = form.cleaned_data["title"].strip()
         user.first_name = form.cleaned_data["first_name"].strip()
         user.last_name = form.cleaned_data["last_name"].strip()

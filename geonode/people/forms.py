@@ -24,7 +24,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.utils.translation import ugettext_lazy as _
 
-from geonode.people.models import Profile
+from geonode.people.models import Profile, Organization
 from geonode.base.models import ContactRole
 
 # Ported in from django-registration
@@ -94,3 +94,36 @@ class ProfileForm(forms.ModelForm):
             'is_superuser',
             'is_active',
             'date_joined')
+
+class OrganizationForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        # first call parent's constructor
+        super(OrganizationForm, self).__init__(*args, **kwargs)
+        # there's a `fields` property now
+        for field in self.Meta.required:
+            self.fields[field].required = True
+
+    def clean_org_acronym(self):
+        qs = Organization.valid_only().filter(org_acronym=self.cleaned_data["org_acronym"])
+        if qs.exists():
+            raise forms.ValidationError(_("Organization acronym already exist."))
+        return self.cleaned_data["org_acronym"]
+
+    class Meta:
+        model = Organization
+        required = (
+            'organization',
+            'org_acronym',
+            'org_type',
+            'org_name_status',
+            'requester_email',
+            'requester_first_name',
+            'requester_last_name',
+        )
+        exclude = (
+            'record_status',
+            'request_reject_reason',
+            'created_at',
+            'updated_at',
+        )

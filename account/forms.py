@@ -18,6 +18,8 @@ from account.hooks import hookset
 from account.models import EmailAddress, SignupCode, SignupCodeExtended
 from geonode.base.enumerations import COUNTRIES, ORG_ACCRONYM, ORG_NAME_STATUS
 
+from geonode.people.models import Organization
+
 alnum_re = re.compile(r"^\w+$")
 
 class SignupForm(forms.Form):
@@ -64,13 +66,21 @@ class SignupForm(forms.Form):
         label=_("Email"),
         widget=forms.TextInput(), required=True)
 
-    organization = forms.CharField(
+    organization = forms.ChoiceField(
         label=_("Organization"),
-        widget=forms.TextInput(), required=True)
+        widget=forms.Select(), required=True)
 
     org_acronym = forms.CharField(
         label=_("Organisation acronym"),
-        widget=forms.TextInput(), required=True)
+        widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+
+    org_type = forms.CharField(
+        label=_("Organization Type"),
+        widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
+
+    org_name_status = forms.CharField(
+        label=_("Organization Name Status"),
+        widget=forms.TextInput(attrs={'readonly':'readonly'}), required=False)
 
 
     position = forms.CharField(
@@ -91,6 +101,9 @@ class SignupForm(forms.Form):
             if SignupCodeExtended.objects.filter(signupcode = sc).exists():
                 field = self.fields['username']
                 field.widget.attrs['readonly'] = True
+        self.fields['organization'].choices = Organization.valid_only()\
+            .values_list('org_acronym','organization')\
+            .order_by('organization')
 
     def clean_username(self):
         if not alnum_re.search(self.cleaned_data["username"].replace('.', '')):
@@ -110,6 +123,15 @@ class SignupForm(forms.Form):
         if not qs.exists() or not settings.ACCOUNT_EMAIL_UNIQUE:
             return value
         raise forms.ValidationError(_("A user is registered with this email address."))
+
+    def clean_organization(self):
+        qs = Organization.valid_only().filter(org_acronym=self.cleaned_data["organization"])
+        if not qs.exists():
+            raise forms.ValidationError(_("Organization not found."))
+        self.cleaned_data["organization"] = qs[0].organization
+        self.cleaned_data["org_type"] = qs[0].org_type
+        self.cleaned_data["org_name_status"] = qs[0].org_name_status
+        return self.cleaned_data["organization"]
 
     def clean(self):
         if "password" in self.cleaned_data and "password_confirm" in self.cleaned_data:

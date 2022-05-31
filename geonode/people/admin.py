@@ -34,7 +34,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
-from .models import Profile
+from .models import Profile, Organization
 from .forms import ProfileCreationForm, ProfileChangeForm
 
 import autocomplete_light
@@ -42,6 +42,30 @@ import autocomplete_light
 csrf_protect_m = method_decorator(csrf_protect)
 sensitive_post_parameters_m = method_decorator(sensitive_post_parameters())
 
+
+class OrganizationAdmin(admin.ModelAdmin):
+    list_display = ('organization', 'org_acronym', 'org_type', 'org_name_status', 'record_status','created_at',)
+    search_fields = ('organization', 'org_acronym',)
+    list_filter = ('org_type', 'org_name_status', 'record_status',)
+    ordering = ('organization',)
+    readonly_fields = ('created_at', 'updated_at',)
+    fieldsets = (
+        (_('Organization'), {'fields': (
+            'organization', 
+            'org_acronym', 
+            'org_type', 
+            'org_name_status',)}),
+        (_('Request'), {'fields': (
+            'requester_email', 
+            'requester_organization_website', 
+            'requester_first_name', 
+            'requester_last_name', 
+            'request_reject_reason',)}),
+        (_('Record'), {'fields': (
+            'record_status', 
+            'created_at', 
+            'updated_at',)})
+    )
 
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('id', 'username', 'organization',)
@@ -225,3 +249,4 @@ class ProfileAdmin(admin.ModelAdmin):
                                                       post_url_continue)
 
 admin.site.register(Profile, ProfileAdmin)
+admin.site.register(Organization, OrganizationAdmin)

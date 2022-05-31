@@ -33,45 +33,66 @@
 
                         <div class="row">
                             <div class="form-group">
-                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-2">
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-2 {% if form.title.errors %}has-error{% endif %}">
                                     <label for="{{ form.title.id_for_label }}" class="control-label">{{ form.title.label }}</label>
                                     {{ form.title |attr:"class:form-control" }}
+                                    {% if form.title.errors %}<p class="help-block">{{ form.title.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-5">
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-5 {% if form.first_name.errors %}has-error{% endif %}">
                                     <label for="{{ form.first_name.id_for_label }}" class="control-label">{{ form.first_name.label }}</label>
                                     {{ form.first_name |attr:"class:form-control" }}
+                                    {% if form.first_name.errors %}<p class="help-block">{{ form.first_name.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-5">
+                                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-5 {% if form.last_name.errors %}has-error{% endif %}">
                                     <label for="{{ form.last_name.id_for_label }}" class="control-label">{{ form.last_name.label }}</label>
                                     {{ form.last_name |attr:"class:form-control" }}
+                                    {% if form.last_name.errors %}<p class="help-block">{{ form.last_name.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 {% if form.username.errors %}has-error{% endif %}">
                                     <label for="{{ form.username.id_for_label }}" class="control-label">{{ form.username.label }}</label>
                                     {{ form.username |attr:"class:form-control" }}
+                                    {% if form.username.errors %}<p class="help-block">{{ form.username.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 {% if form.email.errors %}has-error{% endif %}">
                                     <label for="{{ form.email.id_for_label }}" class="control-label">{{ form.email.label }}</label>
                                     {{ form.email |attr:"class:form-control" }}
+                                    {% if form.email.errors %}<p class="help-block">{{ form.email.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 {% if form.password.errors %}has-error{% endif %}">
                                     <label for="{{ form.password.id_for_label }}" class="control-label">{{ form.password.label }}</label>
                                     {{ form.password |attr:"class:form-control"|attr:"aria-required:true"|attr:"required"|attr:"onchange:form.id_password2.pattern = RegExp.escape(this.value);"|attr:"pattern:(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}" }}
+                                    <p class="help-block">{% trans "Must contain number, lower case, upper case. Min. 6 characters" %}</p>
+                                    {% if form.password.errors %}<p class="help-block">{{ form.password.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 {% if form.password_confirm.errors %}has-error{% endif %}">
                                     <label for="{{ form.password_confirm.id_for_label }}" class="control-label">{{ form.password_confirm.label }}</label>
                                     {{ form.password_confirm |attr:"class:form-control"|attr:"aria-required:true"|attr:"required" }}
+                                    {% if form.password_confirm.errors %}<p class="help-block">{{ form.password_confirm.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+                                <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8 {% if form.organization.errors %}has-error{% endif %}">
                                     <label for="{{ form.organization.id_for_label }}" class="control-label">{{ form.organization.label }}</label>
                                     {{ form.organization |attr:"class:form-control" }}
+                                    {% if form.organization.errors %}<p class="help-block">{{ form.organization.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 {% if form.org_acronym.errors %}has-error{% endif %}">
                                     <label for="{{ form.org_acronym.id_for_label }}" class="control-label">{{ form.org_acronym.label }}</label>
                                     {{ form.org_acronym |attr:"class:form-control" }}
+                                    {% if form.org_acronym.errors %}<p class="help-block">{{ form.org_acronym.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
-                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 {% if form.org_type.errors %}has-error{% endif %}">
+                                    <label for="{{ form.org_type.id_for_label }}" class="control-label">{{ form.org_type.label }}</label>
+                                    {{ form.org_type |attr:"class:form-control" }}
+                                    {% if form.org_type.errors %}<p class="help-block">{{ form.org_type.errors.as_text|safe }}</p>{% endif %}                                            
+                                </div>
+                                <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 {% if form.org_name_status.errors %}has-error{% endif %}">
+                                    <label for="{{ form.org_name_status.id_for_label }}" class="control-label">{{ form.org_name_status.label }}</label>
+                                    {{ form.org_name_status |attr:"class:form-control" }}
+                                    {% if form.org_name_status.errors %}<p class="help-block">{{ form.org_name_status.errors.as_text|safe }}</p>{% endif %}                                            
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 {% if form.position.errors %}has-error{% endif %}">
                                     <label for="{{ form.position.id_for_label }}" class="control-label">{{ form.position.label }}</label>
                                     {{ form.position |attr:"class:form-control" }}
+                                    {% if form.position.errors %}<p class="help-block">{{ form.position.errors.as_text|safe }}</p>{% endif %}                                            
                                 </div>
                             </div>
                         </div>
@@ -106,5 +127,14 @@
             // $('#id_username').focus();
             $('#id_first_name').focus();
         });
+
+        var organizations = {{ organizations|safe }};
+        document.getElementById("id_organization").addEventListener("change", function(event) {
+            var org = organizations[this.value];
+            document.getElementById("id_org_acronym").value = org[0];
+            document.getElementById("id_org_type").value = org[2];
+            document.getElementById("id_org_name_status").value = org[3];
+        });
+               
     </script>
 {% endblock %}

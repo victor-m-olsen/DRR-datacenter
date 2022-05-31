@@ -39,6 +39,10 @@ if "notification" in settings.INSTALLED_APPS:
             "account_active",
             _("Account activated"),
             _("This account is now active and can log in the site"))
+        notification.models.NoticeType.create(
+            "request_add_organization",
+            _("Request add organization"),
+            _("A visitor has requested to add organization"))
 
     signals.post_syncdb.connect(
         create_notice_types,

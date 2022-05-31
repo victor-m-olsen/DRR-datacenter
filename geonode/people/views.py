@@ -32,6 +32,7 @@ from django.http import HttpResponseForbidden
 from geonode.people.models import Profile
 from geonode.people.forms import ProfileForm
 from geonode.people.forms import ForgotUsernameForm
+from geonode.people.forms import OrganizationForm
 from geonode.tasks.email import send_email
 
 import re
@@ -41,6 +42,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Count, Q
 
 from geonode.people.decorators import owner_or_staff_member_required
+
+from django.dispatch import receiver
+from geonode.people.signals import request_add_organization_signal
+from notification import models as notification
 
 @login_required
 def profile_edit(request, username=None):
@@ -83,6 +88,31 @@ def profile_detail(request, username):
     return render(request, "v2/profile_detail.html" if re.match('^/v2', request.path) else "people/profile_detail.html", {
         "profile": profile,
     })
+
+def request_add_organization(request):
+    # if this is a POST request we need to process the form data
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = OrganizationForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            form.save()
+            # send signal
+            request_add_organization_signal.send(sender=request_add_organization, form=form)
+            # redirect to a new URL:
+            return render(request, "v2/request_add_organization_done.html")
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = OrganizationForm()
+
+    return render(
+        request, 
+        "v2/request_add_organization.html", 
+        {"form": form,}
+    )
 
 
 def forgot_username(request):
@@ -163,3 +193,11 @@ def member_count(request):
     }
 
     return render(request, 'v2/_group_member_count.html', context)
+
+@receiver(request_add_organization_signal)
+def request_add_organization_signal_handler(sender, **kwargs):
+    print("request_add_organization_signal_handler")
+
+    # send notif email to admin
+    superuser = get_user_model().objects.filter(is_superuser=True)
+    notification.send(superuser, "request_add_organization", {"org": kwargs['form'].instance})

@@ -1,0 +1,1 @@
+{% load i18n %}{% trans "Visitor" %} "{{ org.requester_first_name }} {{ org.requester_last_name }}" ({{org.requester_email}}) {% trans "has requested to add organization data to the site" %}. {% trans "You can approve by setting the organization as enabled on the admin section" %}: http://{{current_site}}/admin/people/organization/{{org.id}}/

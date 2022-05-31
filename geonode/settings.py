@@ -789,7 +789,9 @@ LOCKDOWN_GEONODE = True
 # Add additional paths (as regular expressions) that don't require
 # authentication.
 # AUTH_EXEMPT_URLS = (r'^/?$','/api','/getOverviewMaps','/account/signup','/geoapi', '/dashboard/print', '/about', '/disclaimer', '/partners', '/video', '/training', '/dashboard/classmarker_insert', '/v2/dashboard/print', '/uploaded/logos', '/documents/api')
-AUTH_EXEMPT_URLS = ('/api','/getOverviewMaps','/geoapi', '/dashboard/print', '/about', '/disclaimer', '/partners', '/video', '/training', '/dashboard/classmarker_insert', '/v2/dashboard/print', '/uploaded/logos', '/documents/api')
+AUTH_EXEMPT_URLS = ('/api','/getOverviewMaps','/geoapi','/people/request-add-organization', 
+    '/dashboard/print', '/about', '/disclaimer', '/partners', '/video', '/training', '/dashboard/classmarker_insert', 
+    '/v2/dashboard/print', '/uploaded/logos', '/documents/api')
 
 
 if LOCKDOWN_GEONODE:
