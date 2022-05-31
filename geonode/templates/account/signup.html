@@ -102,7 +102,10 @@
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">{% trans "Sign up" %}</button>
                         </div>
-                    </fieldset>
+                        <div>
+                        </br>{% trans "Your Organization not listed? " %}<a href="{% url 'request_add_organization' %}">{% trans "Request Add Organization" %}</a>
+                        </div>
+                </fieldset>
                 </form>
             {% else %}
                 <p>{% trans "Sorry, registrations are not open at this time." %}</p>
